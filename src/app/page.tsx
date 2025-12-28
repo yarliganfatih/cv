@@ -8,6 +8,7 @@ import { GlobeIcon, MailIcon, PhoneIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RESUME_DATA } from "@/data/resume-data";
 import { ProjectCard } from "@/components/project-card";
+import { Github, ExternalLink, Youtube, StickyNote, Lock, LockOpen } from "lucide-react";
 
 export const metadata: Metadata = {
   title: `${RESUME_DATA.name} | ${RESUME_DATA.about}`,
@@ -34,55 +35,26 @@ export default function Page() {
                 {RESUME_DATA.location}
               </a>
             </p>
-            <div className="flex gap-x-1 pt-1 font-mono text-sm text-muted-foreground print:hidden">
+            <div className="flex gap-x-1 pt-1 font-mono text-muted-foreground print:hidden">
               {RESUME_DATA.contact.email ? (
-                <Button
-                  className="size-8"
+                <Badge
                   variant="outline"
-                  size="icon"
-                  asChild
                 >
-                  <a href={`mailto:${RESUME_DATA.contact.email}`}>
+                  <a href={`mailto:${RESUME_DATA.contact.email}`} className="flex flex-wrap">
                     <MailIcon className="size-4" />
+                    <span className="ml-2">{RESUME_DATA.contact.email}</span>
                   </a>
-                </Button>
+                </Badge>
               ) : null}
               {RESUME_DATA.contact.tel ? (
-                <Button
-                  className="size-8"
+                <Badge
                   variant="outline"
-                  size="icon"
-                  asChild
                 >
-                  <a href={`tel:${RESUME_DATA.contact.tel}`}>
+                  <a href={`tel:${RESUME_DATA.contact.tel}`} className="flex flex-wrap">
                     <PhoneIcon className="size-4" />
+                    <span className="ml-2">{RESUME_DATA.contact.tel}</span>
                   </a>
-                </Button>
-              ) : null}
-              {RESUME_DATA.contact.social.map((social) => (
-                <Button
-                  key={social.name}
-                  className="size-8"
-                  variant="outline"
-                  size="icon"
-                  asChild
-                >
-                  <a href={social.url}>
-                    <social.icon className="size-4" />
-                  </a>
-                </Button>
-              ))}
-            </div>
-            <div className="hidden flex-col gap-x-1 font-mono text-sm text-muted-foreground print:flex">
-              {RESUME_DATA.contact.email ? (
-                <a href={`mailto:${RESUME_DATA.contact.email}`}>
-                  <span className="underline">{RESUME_DATA.contact.email}</span>
-                </a>
-              ) : null}
-              {RESUME_DATA.contact.tel ? (
-                <a href={`tel:${RESUME_DATA.contact.tel}`}>
-                  <span className="underline">{RESUME_DATA.contact.tel}</span>
-                </a>
+                </Badge>
               ) : null}
             </div>
           </div>
@@ -93,10 +65,66 @@ export default function Page() {
           </Avatar>
         </div>
         <Section>
-          <h2 className="text-xl font-bold">About</h2>
+          <div className="flex justify-between">
+            <h2 className="text-xl font-bold">About</h2>
+            <div className="mt-2 flex flex-wrap gap-1">
+            {RESUME_DATA.contact.social.map((social) => (
+              <Badge
+                variant="outline"
+                className="w-100"
+                key={social.name}
+              >
+                <a
+                  className="flex flex-wrap"
+                  href={social.url}
+                  target="_blank"
+                >
+                  <social.icon className="size-4" />
+                  <span className="ml-2">{social.name}</span>
+                </a>
+              </Badge>
+              ))}
+            </div>
+          </div>
           <p className="text-pretty font-mono text-sm text-muted-foreground">
             {RESUME_DATA.summary}
           </p>
+        </Section>
+        <Section>
+          <h2 className="text-xl font-bold">Education</h2>
+          {RESUME_DATA.education.map((education) => {
+            return (
+              <Card key={education.school}>
+                <CardHeader>
+                  <div className="flex items-center justify-between gap-x-2 text-base">
+                    <h3 className="font-semibold leading-none">
+                      {education.school}
+                    </h3>
+                    <div className="font-mono text-sm tabular-nums text-gray-500">
+                      {education.date}
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="mt-2">{education.degree}</CardContent>
+              </Card>
+            );
+          })}
+        </Section>
+        <Section>
+          <h2 className="text-xl font-bold">Skills</h2>
+          <div className="flex flex-wrap gap-1">
+            {RESUME_DATA.languages.map((language) => {
+              return (
+                <Badge key={language.label} variant="secondary">
+                  <a className="mr-2">{language.label}</a> |
+                  <small>{language.level}</small>
+                </Badge>
+              )
+            })}
+            {RESUME_DATA.skills.map((skill) => {
+              return <Badge key={skill}>{skill}</Badge>;
+            })}
+          </div>
         </Section>
         <Section>
           <h2 className="text-xl font-bold">Work Experience</h2>
@@ -104,6 +132,7 @@ export default function Page() {
             return (
               <Card key={work.company}>
                 <CardHeader>
+                  { work.company ?
                   <div className="flex items-center justify-between gap-x-2 text-base">
                     <h3 className="inline-flex items-center justify-center gap-x-1 font-semibold leading-none">
                       <a className="hover:underline" href={work.link}>
@@ -122,65 +151,77 @@ export default function Page() {
                         ))}
                       </span>
                     </h3>
-                    <div className="text-sm tabular-nums text-gray-500">
-                      {work.start} - {work.end}
+                    <div className="rightSide font-mono text-sm tabular-nums text-gray-500">
+                      {work.location}
                     </div>
                   </div>
-
-                  <h4 className="font-mono text-sm leading-none">
-                    {work.title}
-                  </h4>
+                  : null }
+                  <div className="flex justify-between">
+                    <h4 className="font-mono text-sm leading-none">
+                      {work.title}
+                    </h4>
+                    <div className="rightSide font-mono text-sm leading-none text-gray-500">
+                      {work.date}
+                    </div>
+                  </div>
                 </CardHeader>
                 <CardContent className="mt-2 text-xs">
                   {work.description}
+                </CardContent>
+                <CardContent>
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    <i className="mt-1">{work.projectsTag}</i>
+                  {work.projects?.map((project) => (
+                    <Badge
+                      variant="outline"
+                      className="w-100"
+                      key={project.title}
+                    >
+                      <a
+                        className="flex flex-wrap gep-5 mt-1"
+                        href={project.link?.href}
+                        target="_blank"
+                      >
+                        {
+                        project.link?.href ?
+                          <ExternalLink className="size-3 mr-2" />
+                        :
+                          <Lock className="size-3 mr-2" />
+                        }
+                        <div>{project.title}</div>
+                      </a>
+                    </Badge>
+                  ))}
+                  </div>
                 </CardContent>
               </Card>
             );
           })}
         </Section>
-        <Section>
-          <h2 className="text-xl font-bold">Education</h2>
-          {RESUME_DATA.education.map((education) => {
-            return (
-              <Card key={education.school}>
-                <CardHeader>
-                  <div className="flex items-center justify-between gap-x-2 text-base">
-                    <h3 className="font-semibold leading-none">
-                      {education.school}
-                    </h3>
-                    <div className="text-sm tabular-nums text-gray-500">
-                      {education.start} - {education.end}
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="mt-2">{education.degree}</CardContent>
-              </Card>
-            );
-          })}
-        </Section>
-        <Section>
-          <h2 className="text-xl font-bold">Skills</h2>
-          <div className="flex flex-wrap gap-1">
-            {RESUME_DATA.skills.map((skill) => {
-              return <Badge key={skill}>{skill}</Badge>;
-            })}
-          </div>
-        </Section>
 
         <Section className="print-force-new-page scroll-mb-16">
-          <h2 className="text-xl font-bold">Projects</h2>
-          <div className="-mx-3 grid grid-cols-1 gap-3 print:grid-cols-3 print:gap-2 md:grid-cols-2 lg:grid-cols-3">
+          <h2 className="text-xl font-bold">Other Projects</h2>
+          <div className="-mx-3 grid grid-cols-1 gap-3 print:grid-cols-3 print:gap-2 md:grid-cols-3 lg:grid-cols-3">
             {RESUME_DATA.projects.map((project) => {
+              interface LinkObj {
+                label: string;
+                icon?: string;
+                href: string;
+              }
               return (
                 <ProjectCard
                   key={project.title}
                   title={project.title}
                   description={project.description}
                   tags={project.techStack}
-                  link={"link" in project ? project.link.href : undefined}
+                  link={project.link ?? undefined}
+                  links={(project.links ?? []) as LinkObj[]}
                 />
               );
             })}
+          </div>
+          <div className="text-sm tabular-nums text-gray-500">
+            For more, you can check out <a className="font-bold" href={RESUME_DATA.contact.social[0].url}>my github repositories and gists</a>.
           </div>
         </Section>
       </section>
